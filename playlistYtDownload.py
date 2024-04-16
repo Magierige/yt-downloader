@@ -8,12 +8,11 @@ def playlistDownload(p):
     if type == 'a':
         for video in p.videos:
             tempFile = video.streams.get_audio_only().download(output_path=f"Downloads/{p.title}")
-            #check if the mp3 file is already in the directory
-            if os.path.exists(f"Downloads/{p.title}/{video.title}.mp3"):
-                num = random.randint(1, 10)
-                os.rename(tempFile, f"Downloads/{p.title}/{video.title} {num}.mp3")
+            if os.path.exists(f"Downloads/{p.title}/{video.title.replace("/", " ")}.mp3"):
+                num = random.randint(100, 999)
+                os.rename(tempFile, f"Downloads/{p.title}/{video.title.replace("/", " ")} {num}.mp3")
             else:
-                os.rename(tempFile, f"Downloads/{p.title}/{video.title}.mp3")
+                os.rename(tempFile, f"Downloads/{p.title}/{video.title.replace("/", " ")}.mp3")
     elif type == 'v':
         for video in p.videos:
             video.streams.get_highest_resolution().download()
@@ -38,7 +37,8 @@ def videoDownload(link):
         print("An error has occurred")
     if type == 'a':
         # Rename the file to the title of the video
-        os.rename(tempFile, f"Downloads/{youtubeObject.title}.mp3")
+        print(tempFile)
+        os.rename(tempFile, f"Downloads/{youtubeObject.title.replace("/", " ")}.mp3")
     print("Download is completed successfully")
 
 # user input to choose between video or playlist
