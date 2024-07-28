@@ -5,25 +5,40 @@ import random
 
 def playlistDownload(p):
     print(f'Downloading: {p.title}')
+    failed = []
     if type == 'a':
         for video in p.videos:
             print(f'Downloading: {video.title}')
-            tempFile = video.streams.get_audio_only().download(output_path=f"Downloads/{p.title}")
+            try:
+                tempFile = video.streams.get_audio_only().download(output_path=f"Downloads/{p.title}")
+            except:
+                print(f"{video.title}: failed")
+                failed.append(video.title)
+                continue
             if os.path.exists(f"Downloads/{p.title}/{''.join(e for e in video.title if e.isalnum() or e.isspace())}.mp3"):
                 num = random.randint(100, 999)
                 os.rename(tempFile, f"Downloads/{p.title}/{''.join(e for e in video.title if e.isalnum() or e.isspace())} {num}.mp3")
             else:
                 os.rename(tempFile, f"Downloads/{p.title}/{''.join(e for e in video.title if e.isalnum() or e.isspace())}.mp3")
-            print(f'Downloaded: {video.title}')
+            print(f'{video.title}: success')
     elif type == 'v':
         for video in p.videos:
             print(f'Downloading: {video.title}')
-            video.streams.get_highest_resolution().download()
-            print(f'Downloaded: {video.title}')
+            try:
+                video.streams.get_highest_resolution().download()
+            except:
+                print(f"{video.title}: failed")
+                failed.append(video.title)
+                continue
+            print(f'{video.title}: success')
     else:
         print("Invalid type input")
         return
     print("Download is completed successfully")
+    if len(failed) > 0:
+        print("Failed downloads:")
+        for f in failed:
+            print(f)
 
 def videoDownload(link):
     youtubeObject = YouTube(link)
